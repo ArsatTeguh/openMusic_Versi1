@@ -7,14 +7,13 @@ exports.up = (pgm) => {
     name: {
       type: 'TEXT',
       notNull: true,
-    },      
-    years: {
-      type: 'TEXT',
+    },
+    year: {
+      type: 'INTEGER',
       notNull: true,
     },
   });
 };
-
 exports.down = (pgm) => {
   pgm.dropTable('albums');
 };

@@ -1,20 +1,20 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../expction/invariantError');
-const { mapDBToModelAlbums } = require('../../util/albumsDb');
+const { mapDBToModelSongs } = require('../../util/songsDb');
 const NotFoundError = require('../../expction/notFoundError');
 
-class AlbumsService {
+class SongsService {
   constructor() {
     this._pool = new Pool();
   }
 
-  async addAlbums({ name, year }) {
+  async addSongs({ title, year, genre, performer, duration, albumId }) {
     const id = nanoid(16);
 
     const query = {
-      text: 'INSERT INTO albums VALUES($1, $2, $3) RETURNING id',
-      values: [id, name, year],
+      text: 'INSERT INTO songs VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+      values: [id, title, year, genre, performer, duration, albumId],
     };
 
     const result = await this._pool.query(query);
@@ -26,9 +26,14 @@ class AlbumsService {
     return result.rows[0].id;
   }
 
-  async getAlbumsById(id) {
+  async getSongs() {
+    const result = await this._pool.query('SELECT * FROM songs');
+    return result.rows.map(mapDBToModelSongs);
+  }
+
+  async getSongsById(id) {
     const query = {
-      text: 'SELECT * FROM albums WHERE id = $1',
+      text: 'SELECT * FROM songs WHERE id = $1',
       values: [id],
     };
     const result = await this._pool.query(query);
@@ -37,13 +42,13 @@ class AlbumsService {
       throw new NotFoundError('Catatan tidak ditemukan');
     }
 
-    return result.rows.map(mapDBToModelAlbums)[0];
+    return result.rows.map(mapDBToModelSongs)[0];
   }
 
-  async editAlbumsById(id, { name, year }) {
+  async editSongsById(id, { title, year, genre, performer, duration, albumId }) {
     const query = {
-      text: 'UPDATE albums SET name = $1, year = $2 WHERE id = $3 RETURNING id',
-      values: [name, year, id],
+      text: 'UPDATE songs SET title = $1, year = $2, genre = $3, performer = $4, duration = $5, albumId = $6 WHERE id = $7 RETURNING id',
+      values: [title, year, genre, performer, duration, albumId, id],
     };
 
     const result = await this._pool.query(query);
@@ -53,9 +58,9 @@ class AlbumsService {
     }
   }
 
-  async deleteAlbumsById(id) {
+  async deleteSongsById(id) {
     const query = {
-      text: 'DELETE FROM albums WHERE id = $1 RETURNING id',
+      text: 'DELETE FROM songs WHERE id = $1 RETURNING id',
       values: [id],
     };
 
@@ -67,4 +72,4 @@ class AlbumsService {
   }
 }
 
-module.exports = AlbumsService;
+module.exports = SongsService;

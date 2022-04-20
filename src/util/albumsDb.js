@@ -1,10 +1,10 @@
 const mapDBToModelAlbums = ({
   id,
   name,
-  years,
+  year,
 }) => ({
   id,
   name,
-  years,
+  year,
 });
 module.exports = { mapDBToModelAlbums };

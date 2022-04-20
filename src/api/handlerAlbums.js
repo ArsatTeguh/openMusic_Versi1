@@ -13,16 +13,16 @@ class AlbumsHandler {
   async postAlbumsHandler(req, h) {
     try {
       this._Validator.validateAlbumsPayload(req.payload);
-      const { name, years } = req.payload;
+      const { name, year } = req.payload;
 
       // mettod addnote mengembalikan id
-      const albumsId = await this._Service.addAlbums({ name, years });
+      const albumsId = await this._Service.addAlbums({ name, year });
 
       const response = h.response({
         status: 'success',
         message: 'Catatan berhasil ditambahkan',
         data: {
-          albumsId,
+         albumsId,
         },
       });
       response.code(201);
@@ -52,12 +52,16 @@ class AlbumsHandler {
     try {
       const { id } = req.params;
       const albums = await this._Service.getAlbumsById(id);
-      return {
-        status: 'success',
-        data: {
-          albums,
-        },
-      };
+      const response = h.response({
+        data: { 
+            status: 'success',
+            data: {
+            albums,
+            },
+        }
+      })
+      response.code(200);
+      return response;
     } catch (error) {
       if (error instanceof ClientError) {
         const response = h.response({
@@ -86,10 +90,12 @@ class AlbumsHandler {
 
       await this._Service.editAlbumsById(id, request.payload);
 
-      return {
-        status: 'success',
-        message: 'Catatan berhasil diperbarui',
-      };
+      const response = h.response({
+          status: 'success',
+          message: 'Catatan berhasil diperbarui',
+      })
+      response.code(200);
+      return response;
     } catch (error) {
       if (error instanceof ClientError) {
         const response = h.response({

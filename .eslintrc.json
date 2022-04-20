@@ -12,7 +12,7 @@
     },
     "rules": {
         "no-console": "off", //unutk menon-aktifkan penggunaan console
-        "linebreak-style" : ["error", "windows"], // memperboleh kan baris baru 
+        "linebreak-style" : ["error", "windows",0], // memperboleh kan baris baru 
         "eol-last": ["error", "never"], // memperbolehkan tidak menggunakan baris baru di ujung code
         "no-underscore-dangle" : "off",
         "no-shadow" : "off",
