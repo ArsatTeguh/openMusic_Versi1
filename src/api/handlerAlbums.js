@@ -22,7 +22,7 @@ class AlbumsHandler {
         status: 'success',
         message: 'Catatan berhasil ditambahkan',
         data: {
-         albumId,
+          albumId,
         },
       });
       response.code(201);
@@ -87,9 +87,9 @@ class AlbumsHandler {
       await this._Service.editAlbumsById(id, request.payload);
 
       const response = h.response({
-          status: 'success',
-          message: 'Catatan berhasil diperbarui',
-      })
+        status: 'success',
+        message: 'Catatan berhasil diperbarui',
+      });
       response.code(200);
       return response;
     } catch (error) {
@@ -97,7 +97,7 @@ class AlbumsHandler {
         const response = h.response({
           status: 'fail',
           message: error.message,
-        });  
+        });
         response.code(error.statusCode);
         return response;
       }

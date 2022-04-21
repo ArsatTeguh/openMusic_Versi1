@@ -11,21 +11,20 @@ class SongsHandler {
     this.putSongsByIdHandler = this.putSongsByIdHandler.bind(this);
     this.deleteSongsByIdHandler = this.deleteSongsByIdHandler.bind(this);
   }
+
   async postSongsHandler(req, h) {
     try {
       this._Validator.validateSongsPayload(req.payload);
       const { title, year, genre, performer, duration, albumId } = req.payload;
 
       // mettod addnote mengembalikan id
-      const songsId = await this._Service.addSongs({ title, year, genre, performer, duration, albumId });
 
+  const songId = await this._Service.addSongs({ title, year, genre, performer, duration, albumId });
       const response = h.response({
         status: 'success',
         message: 'Catatan berhasil ditambahkan',
         data: {
-          songs: {
-            songsId,
-          }
+          songId,
         },
       });
       response.code(201);
@@ -58,13 +57,12 @@ class SongsHandler {
         status: 'success',
         data: {
           songs: songs.map((song) => ({
-          id: song.id,
-          title: song.title,
-          performer: song.performer
-          }))
-        }
-      } 
-
+            id: song.id,
+            title: song.title,
+            performer: song.performer,
+          })),
+        },
+      };
     } catch (error) {
       if (error instanceof ClientError) {
         const response = h.response({
@@ -89,11 +87,11 @@ class SongsHandler {
   async getSongsByIdHandler(req, h) {
     try {
       const { id } = req.params;
-      const songs = await this._Service.getSongsById(id);
+      const song = await this._Service.getSongsById(id);
       return {
         status: 'success',
         data: {
-          songs,
+          song,
         },
       };
     } catch (error) {

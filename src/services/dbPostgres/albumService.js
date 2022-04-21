@@ -8,6 +8,7 @@ class AlbumsService {
   constructor() {
     this._pool = new Pool();
   }
+
   async addAlbums({ name, year }) {
     const id = nanoid(16);
 
@@ -36,7 +37,7 @@ class AlbumsService {
       throw new NotFoundError('Catatan tidak ditemukan');
     }
 
-    return result.rows.map(mapDBToModelAlbums)[0];  
+    return result.rows.map(mapDBToModelAlbums)[0];
   }
 
   async editAlbumsById(id, { name, year }) {

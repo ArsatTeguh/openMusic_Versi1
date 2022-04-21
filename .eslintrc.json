@@ -18,6 +18,7 @@
         "no-shadow" : "off",
         "camelcase" : "off",
         "operator-linebreak": "off",
-        "object-curly-newline": "off"
+        "object-curly-newline": "off",
+        "quotes":"off"
     }   
 }
