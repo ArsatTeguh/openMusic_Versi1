@@ -8,7 +8,6 @@ class SongsService {
   constructor() {
     this._pool = new Pool();
   }
-
   async addSongs({ title, year, genre, performer, duration, albumId }) {
     const id = nanoid(16);
 

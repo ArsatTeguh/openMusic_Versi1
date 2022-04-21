@@ -11,7 +11,6 @@ class SongsHandler {
     this.putSongsByIdHandler = this.putSongsByIdHandler.bind(this);
     this.deleteSongsByIdHandler = this.deleteSongsByIdHandler.bind(this);
   }
-
   async postSongsHandler(req, h) {
     try {
       this._Validator.validateSongsPayload(req.payload);
