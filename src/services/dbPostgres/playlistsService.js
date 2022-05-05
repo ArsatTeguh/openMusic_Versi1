@@ -1,8 +1,8 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../expction/invariantError');
-const NotFoundError = require('../../expction/notFoundError');
-const AuthorizationError = require('../../expction/authenticationsError');
+const AuthorizationError = require('../../expction/authorizationsError');
+const NotFoundError = require('../../expction/notFoundError')
 
 class PlaylistsService {
   constructor(collaborationsService) {
@@ -48,7 +48,7 @@ class PlaylistsService {
 
     const result = await this._pool.query(query);
     if (!result.rows.length) {
-      throw new NotFoundError('Playlist tidak ditemukan');
+      throw new AuthorizationError('Playlist tidak ditemukan');
     }
     return result.rows[0];
   }
@@ -60,7 +60,7 @@ class PlaylistsService {
     };
     const result = await this._pool.query(query);
     if (!result.rows.length) {
-      throw new NotFoundError('Playlist gagal dihapus. Id tidak ditemukan');
+      throw new InvariantError('Playlist gagal dihapus. Id tidak ditemukan');
     }
   }
 
@@ -70,7 +70,7 @@ class PlaylistsService {
       values: [id],
     });
     if (!result.rows.length) {
-      throw new NotFoundError('Playlist tidak ada');
+      throw new NotFoundError ('Playlist tidak ada');
     }
     const playlist = result.rows[0];
     if (playlist.owner !== owner) {
@@ -82,7 +82,7 @@ class PlaylistsService {
     try {
       await this.verifyPlaylistOwner(playlistId, userId);
     } catch (error) {
-      if (error instanceof NotFoundError) {
+      if (error instanceof InvariantError) {
         throw error;
       }
       try {
