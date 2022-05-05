@@ -2,7 +2,7 @@ const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
 const OpenMusik = require('./src/api/index');
 const OpenMusik2 = require('./src/api/indexSongs');
-const songsService = require('./src/services/dbPostgres/songsService');
+const SongsService = require('./src/services/dbPostgres/songsService');
 const AlbumsSevice = require('./src/services/dbPostgres/albumService');
 const validatorAlbums = require('./src/validator/albumsValidate');
 const validatorSongs = require('./src/validator/songsValidate');
@@ -26,15 +26,21 @@ const AuthenticationsValidator = require('./src/validator/Authentications');
 //Collaborations
 const CollaborationsService = require('./src/services/dbPostgres/collaborationsService');
 
+// PlaylistSongs
+const playlistSongs = require('./src/api/PlaylistSongs');
+const PlaylistsSongsService = require('./src/services/dbPostgres/playlistsSongsService');
+const PlaylistSongsValidator = require('./src/validator/PlaylistsSongsValidator');
+
 require('dotenv').config();
 
 const init = async () => {
   const AlbumsService = new AlbumsSevice();
-  const SongsService = new songsService();
-  const userService = new UsersService();
+  const songsService = new SongsService();
+  const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
-  const playlistsService = new PlaylistsService()
-  const collaborationsService = new CollaborationsService(playlistsService)
+  const collaborationsService = new CollaborationsService();
+  const playlistsService = new PlaylistsService(collaborationsService);
+  const playlistsSongsService = new PlaylistsSongsService()
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,
@@ -75,14 +81,14 @@ const init = async () => {
   {
     plugin: OpenMusik2,
     options: {
-      service: SongsService,
+      service: songsService,
       validator: validatorSongs,
     },
   },
   {
     plugin: users,
     options: {
-      service: userService,
+      service: usersService,
       validator: userValidator,
     },
   },
@@ -97,11 +103,23 @@ const init = async () => {
     plugin: authentications,
     options: {
       authenticationsService,
-      userService,
+      usersService,
       tokenManager: TokenManager,
       validator: AuthenticationsValidator,
     },
   },
+  {
+    plugin: playlistSongs,
+    options: {
+      service: {
+        playlistsSongsService,
+          songsService,
+          playlistsService,
+        },
+        validator: PlaylistSongsValidator,
+    },
+  },
+
   ]);
   await server.start();
   console.log(`Server Berjalan Di Port ${server.info.uri}`);

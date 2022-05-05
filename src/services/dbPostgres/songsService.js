@@ -70,6 +70,16 @@ class SongsService {
       throw new NotFoundError('Catatan gagal dihapus. Id tidak ditemukan');
     }
   }
+
+  async getSongsByPlaylistId(playlistId) {
+    const result = await this._pool.query({
+      text: `SELECT songs.id, songs.title, songs.performer FROM songs 
+                LEFT JOIN playlistssongs ON playlistssongs.song_id = songs.id 
+                WHERE playlistssongs.playlist_id = $1`,
+      values: [playlistId],
+    });
+    return result.rows;
+  }
 }
 
 module.exports = SongsService;
